@@ -61,7 +61,7 @@ git push origin master
 <a name="english"></a>
 # Terraform & Go Cloud Project (English)
 
-This is a personal project where I showcase my ability to build and automate a modern cloud-native environment. I designed this to demonstrate a full DevOps lifecycle—starting from a Go-based backend and moving through Dockerization to fully automated AWS deployment using Terraform and GitHub Actions.
+This is a project where I showcase a modern cloud-native environment. I designed this to demonstrate a full DevOps lifecycle-starting from a Go-based backend and moving through Dockerization to fully automated AWS deployment using Terraform and GitHub Actions.
 
 ## Project Architecture
 
@@ -103,7 +103,7 @@ This is a personal project where I showcase my ability to build and automate a m
    ```
 
 ### Deployment
-Designed for a smooth developer experience—simply push your changes, and the CI/CD pipeline takes care of the rest:
+Designed for a smooth developer experience-simply push your changes, and the CI/CD pipeline takes care of the rest:
 ```bash
 git add .
 git commit -m "Add feature high-level summary"
