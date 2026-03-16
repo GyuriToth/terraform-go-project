@@ -5,11 +5,11 @@
 ---
 
 <a name="english"></a>
-# 🚀 Terraform & Go Cloud Project (English)
+# Terraform & Go Cloud Project (English)
 
 A cloud-native application demonstrating a full DevOps lifecycle: from a Go backend to AWS deployment via Terraform and GitHub Actions.
 
-## 📦 Project Components
+## Project Components
 
 ### 1. Backend: Go API
 - **[main.go](app/main.go)**: A lightweight API that greets the user and identifies the server hostname.
@@ -40,11 +40,11 @@ A cloud-native application demonstrating a full DevOps lifecycle: from a Go back
 ---
 
 <a name="magyar"></a>
-# 🚀 Terraform & Go Cloud Projekt (Magyar)
+# Terraform & Go Cloud Projekt (Magyar)
 
 Egy professzionális cloud-native alkalmazás, amely bemutatja a teljes DevOps életciklust: a Go backendtől az AWS-ig, Terraform és GitHub Actions segítségével.
 
-## 📦 Projekt Komponensei
+## Projekt Komponensei
 
 ### 1. Backend: Go API
 - **[main.go](app/main.go)**: Egy könnyű API, amely üdvözli a felhasználót és azonosítja a szerver gépnevét.
@@ -66,7 +66,7 @@ Egy professzionális cloud-native alkalmazás, amely bemutatja a teljes DevOps �
 ### 5. Orchestration: Kubernetes
 - **[k8s.yaml](k8s.yaml)**: Deployment és Service konfigurációk helyi futtatáshoz (pl. k3d vagy minikube használatával).
 
-## ✅ Késznek Tekintési Feltételek
+## Késznek Tekintési Feltételek
 - **Helyi futás**: A k3d fürtben a podok futnak és port-forward után elérhetőek.
 - **Felhő futás**: A `terraform apply` sikeresen lefut és publikus HTTPS címet ad.
 - **CI/CD Pipeline**: Zöld pipák a GitHub Actions fülön minden push után.
