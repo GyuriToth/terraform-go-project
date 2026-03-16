@@ -1,111 +1,54 @@
-# Project: Terraform & Go Cloud
+# Cloud-Native Go & Infrastructure Pipeline (AWS + Terraform)
 
-[Magyar](#magyar) | [English](#english)
+This project demonstrates a production-ready, end-to-end DevOps lifecycle. I built this to showcase how a containerized Go application moves from a local environment to a fully automated AWS infrastructure using modern CI/CD practices.
+
+[Magyar leírás](#magyar) | [English Version](#english)
 
 ---
 
 <a name="magyar"></a>
-# Terraform & Go Cloud Projekt (Magyar)
+## 🇭🇺 Magyar leírás
 
-Ez a projekt bemutatja a modern felhő-natív fejlesztési folyamatokat (DevOps). A célom az volt, hogy egy teljes életciklust építsek fel: a Go backend kódtól kezdve a konténerizáción át egészen az automatizált AWS felhős telepítésig.
+Ez a projekt egy teljes felhő-natív életciklust mutat be. A célom egy olyan rendszer építése volt, ahol a kód és az infrastruktúra elválaszthatatlan egységet alkot, és a telepítés teljesen automatizált.
 
-## A projekt felépítése
+### Mérnöki döntések
 
-### 1. Backend: Go API
-- **[main.go](app/main.go)**: Egy könnyű, hatékony API, amely üdvözli a felhasználót és azonosítja a szerver gépnevét. Ez segít vizualizálni a terheléselosztást vagy a Kubernetes skálázódást.
-- **[main_test.go](app/main_test.go)**: Unit tesztek, amelyek biztosítják az API üzleti logikájának helyességét még a build előtt.
+* **Go Backend:** A nagy teljesítmény és a minimális gépigény miatt választottam. A kódot úgy strukturáltam, hogy a handler logika leválasztható legyen, így biztosítva a teljes körű unit tesztelhetőséget.
+* **Infrastruktúra kódként (Terraform):** Elkerültem az AWS konzolon való manuális kattintgatást. Az `eu-central-1` régióban minden erőforrás (S3, ECR, App Runner) kódból épül fel, biztosítva a környezetek közötti azonosságot.
+* **Docker optimalizáció:** A **multi-stage build** technológiával elértem, hogy a végleges image mérete mindössze ~15MB legyen, ami kritikus a gyors skálázódás és a biztonság szempontjából.
+* **Kubernetes (k3d):** A helyi fejlesztéshez k3d-t használtam, hogy szimuláljam a nagyvállalati környezetekben elvárt orchestrációs folyamatokat.
 
-### 2. Konténerizáció: Docker
-- **[Dockerfile](Dockerfile)**: Többlépcsős (multi-stage) buildet alkalmaztam Alpine Linux alapon. Így az elkészült image mérete minimális (~15MB), ami gyorsabb letöltést és kisebb biztonsági kockázatot jelent.
+### CI/CD és Automatizáció
+A projekt a Continuous Deployment elvét követi. A GitHub Actions workflow:
+1.  **Tesztel:** Csak sikeres unit tesztek után indul el a build.
+2.  **Buildel:** Elkészíti az optimalizált konténert.
+3.  **Deployol:** Feltölti az ECR tárolóba, ahonnan az AWS App Runner automatikusan frissíti az éles környezetet (rolling update).
 
-### 3. Felhő (IaC): Terraform
-- **[main.tf](main.tf)**: Ebben a fájlban definiáltam az összes AWS erőforrást az `eu-central-1` régióban. Használtam S3 tárhelyet, ECR-t az image-ek tárolására, és App Runnert a konténer futtatásához. Fontosnak tartottam az IAM szerepkörök pontos beállítását is.
-
-### 4. Automatizáció: CI/CD
-- **[.github/workflows/deploy.yml](.github/workflows/deploy.yml)**: Egy automatizált pipeline-t építettem, amely minden feltoláskor (push) lefuttatja a teszteket, buildeli az új image-et, és biztonságosan frissíti az AWS környezetet.
-
-### 5. Orchestration: Kubernetes
-- **[k8s.yaml](k8s.yaml)**: Készítettem Kubernetes konfigurációkat is, hogy az alkalmazás könnyen tesztelhető legyen helyi fürtökben (pl. k3d vagy minikube).
-
-## Telepítési útmutató
-
-### Amire szükséged lesz
-- **Terraform**: Az infrastruktúra automatizálásához.
-- **Docker**: A build folyamathoz.
-- **AWS CLI**: Megfelelő jogosultságokkal (Access Key & Secret Key).
-
-### Helyi futtatás és tesztelés
-1. Terraform inicializálása:
-   ```bash
-   terraform init
-   ```
-2. Terv ellenőrzése:
-   ```bash
-   terraform plan
-   ```
-3. Infrastruktúra létrehozása (opcionális):
-   ```bash
-   terraform apply
-   ```
-
-### Automatikus Deployment
-A projekt úgy van beállítva, hogy minden `git push` után automatikusan frissüljön az AWS-ben. Ez biztosítja a folyamatos kiszállítást (Continuous Delivery):
-```bash
-git add .
-git commit -m "Új funkció hozzáadása"
-git push origin master
-```
+### Tanulságok
+A projekt során mélyebb betekintést nyertem a Kubernetes hálózati és tárolási logikájába. A lokális fejlesztés közben felmerülő `ImagePullBackOff` hibák megoldása során sajátítottam el a konténer-runtime-ok (containerd) kezelését és az image-importálási folyamatokat.
 
 ---
 
 <a name="english"></a>
-# Terraform & Go Cloud Project (English)
+## 🇺🇸 English Version
 
-This is a project where I showcase a modern cloud-native environment. I designed this to demonstrate a full DevOps lifecycle-starting from a Go-based backend and moving through Dockerization to fully automated AWS deployment using Terraform and GitHub Actions.
+### Engineering Decisions & Architecture
 
-## Project Architecture
+* **Backend (Go):** I chose Go for its efficiency and native support for containerized environments. The core logic is decoupled from the server setup, allowing for 100% unit test coverage of the API handlers.
+* **Infrastructure as Code (Terraform):** To ensure environment consistency, I avoided manual AWS console configuration. Everything (S3, ECR, IAM, and App Runner) is defined in HCL, making the entire stack reproducible and version-controlled.
+* **Containerization (Docker):** I implemented a **multi-stage build** using Alpine Linux. This reduced the final image size to ~15MB, significantly improving deployment speed and reducing the security attack surface.
+* **CI/CD (GitHub Actions):** I followed the **"Fail Fast"** principle. The pipeline automatically runs unit tests before building the Docker image. Deployment to AWS ECR and App Runner only happens if all tests pass.
+* **Orchestration (Kubernetes):** While the production environment uses AWS App Runner, I included `k8s.yaml` for local testing with **k3d**. This mirrors an enterprise-grade "inner development loop."
 
-### 1. Backend: Go API
-- **[main.go](app/main.go)**: A lightweight API that handles basic requests and identifies the host machine. I designed it this way to make scaling (Kubernetes/Load Balancers) easy to observe.
-- **[main_test.go](app/main_test.go)**: Unit tests included to ensure that core logic is validated before any build or deployment occurs.
+### Lessons Learned (The "Human" Side)
+During development, I hit a common hurdle: the local k3d cluster couldn't pull my local Docker image. Debugging the `ImagePullBackOff` error taught me the nuances of container runtimes (containerd) and the importance of `imagePullPolicy: IfNotPresent` and manual image importing (`k3d image import`) in local K8s development.
 
-### 2. Containerization: Docker
-- **[Dockerfile](Dockerfile)**: I used a multi-stage build pattern based on Alpine Linux. This keeps the final image footprint extremely small (~15MB), making it efficient to store and fast to deploy.
-
-### 3. Infrastructure as Code (IaC): Terraform
-- **[main.tf](main.tf)**: All AWS resources are provisioned via Terraform in the `eu-central-1` region. This includes an S3 bucket for storage, ECR for image management, and AWS App Runner for managed container hosting, all tied together with secure IAM roles.
-
-### 4. Automation: CI/CD
-- **[.github/workflows/deploy.yml](.github/workflows/deploy.yml)**: I built a robust pipeline that triggers on every push to `master`. It handles testing, building, and pushing the new image to ECR, ensuring that only verified code reaches the cloud.
-
-### 5. Orchestration: Kubernetes
-- **[k8s.yaml](k8s.yaml)**: These configurations allow for local testing and orchestration using clusters like k3d or minikube, mirroring how the app would behave in an enterprise environment.
-
-## Setup Guide
-
-### Prerequisites
-- **Terraform**: For infrastructure automation.
-- **Docker**: For local builds.
-- **AWS CLI**: Configured with valid programmatic access (Access Key & Secret Key).
-
-### Local Setup & Testing
-1. Initialize Terraform:
-   ```bash
-   terraform init
-   ```
-2. Verify the changes:
-   ```bash
-   terraform plan
-   ```
-3. (Optional) Spin up the cloud environment:
-   ```bash
-   terraform apply
-   ```
-
-### Deployment
-Designed for a smooth developer experience-simply push your changes, and the CI/CD pipeline takes care of the rest:
-```bash
-git add .
-git commit -m "Add feature high-level summary"
-git push origin master
-```
+### Quick Start
+1.  **Infrastructure:** `terraform init && terraform apply`
+2.  **Local K8s Test:**
+    ```bash
+    k3d cluster create my-local-cloud
+    k3d image import elso-alkalmazasom:latest -c my-local-cloud
+    kubectl apply -f k8s.yml
+    ```
+3.  **Deployment:** Simply `git push origin master` to trigger the automated CI/CD pipeline.
