@@ -15,10 +15,7 @@ func TestMainHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	
-	// Define the handler logic similar to main.go
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello! This is a Go application running in a container."))
-	})
+	handler := http.HandlerFunc(HandleRoot)
 
 	handler.ServeHTTP(rr, req)
 

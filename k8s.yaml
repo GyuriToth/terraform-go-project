@@ -15,6 +15,7 @@ spec:
       containers:
       - name: go-app
         image: elso-alkalmazasom:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
 ---
