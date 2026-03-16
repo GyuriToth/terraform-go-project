@@ -1,73 +1,111 @@
-# Terraform & Go Cloud Project / Projekt
+# Project: Terraform & Go Cloud
 
-[English](#english) | [Magyar](#magyar)
-
----
-
-<a name="english"></a>
-# Terraform & Go Cloud Project (English)
-
-A cloud-native application demonstrating a full DevOps lifecycle: from a Go backend to AWS deployment via Terraform and GitHub Actions.
-
-## Project Components
-
-### 1. Backend: Go API
-- **[main.go](app/main.go)**: A lightweight API that greets the user and identifies the server hostname.
-- **[main_test.go](app/main_test.go)**: Unit tests for the API handler.
-
-### 2. Containerization: Docker
-- **[Dockerfile](Dockerfile)**: A multi-stage build using Alpine Linux to ensure a minimal footprint (~15MB).
-
-### 3. Infrastructure as Code (IaC): Terraform
-- **[main.tf](main.tf)**: Provisions AWS resources in `eu-central-1`:
-    - **S3 Bucket**: Scalable storage.
-    - **ECR Repository**: Secure Docker image registry with `force_delete` and scan-on-push.
-    - **IAM Roles**: App Runner service role with ECR access.
-    - **App Runner Service**: Managed container execution with auto-deployment.
-
-### 4. Automation: CI/CD
-- **[.github/workflows/deploy.yml](.github/workflows/deploy.yml)**: GitHub Actions pipeline that builds, tags, and pushes the image to Amazon ECR on every push to `master`.
-
-### 5. Orchestration: Kubernetes
-- **[k8s.yaml](k8s.yaml)**: Deployment and Service configurations for local orchestration (e.g., using k3d or minikube).
-
-## ✅ Definition of Done
-- **Local Runtime**: Pods are running in a k3d cluster and accessible via port-forwarding.
-- **Cloud Runtime**: `terraform apply` executes successfully, providing a public HTTPS URL.
-- **CI/CD Pipeline**: Green checks on the GitHub Actions tab for every push.
-- **Cleanup**: `terraform destroy` and cluster deletion leave no stray resources or costs.
+[Magyar](#magyar) | [English](#english)
 
 ---
 
 <a name="magyar"></a>
 # Terraform & Go Cloud Projekt (Magyar)
 
-Egy professzionális cloud-native alkalmazás, amely bemutatja a teljes DevOps életciklust: a Go backendtől az AWS-ig, Terraform és GitHub Actions segítségével.
+Ez a projekt bemutatja a modern felhő-natív fejlesztési folyamatokat (DevOps) mutatja be. A célom az volt, hogy egy teljes életciklust építsek fel: a Go backend kódtól kezdve a konténerizáción át egészen az automatizált AWS felhős telepítésig.
 
-## Projekt Komponensei
+## A projekt felépítése
 
 ### 1. Backend: Go API
-- **[main.go](app/main.go)**: Egy könnyű API, amely üdvözli a felhasználót és azonosítja a szerver gépnevét.
-- **[main_test.go](app/main_test.go)**: Unit tesztek az API-hoz.
+- **[main.go](app/main.go)**: Egy könnyű, hatékony API, amely üdvözli a felhasználót és azonosítja a szerver gépnevét. Ez segít vizualizálni a terheléselosztást vagy a Kubernetes skálázódást.
+- **[main_test.go](app/main_test.go)**: Unit tesztek, amelyek biztosítják az API üzleti logikájának helyességét még a build előtt.
 
 ### 2. Konténerizáció: Docker
-- **[Dockerfile](Dockerfile)**: Többlépcsős (multi-stage) build Alpine Linux alapon a minimális méret érdekében (~15MB).
+- **[Dockerfile](Dockerfile)**: Többlépcsős (multi-stage) buildet alkalmaztam Alpine Linux alapon. Így az elkészült image mérete minimális (~15MB), ami gyorsabb letöltést és kisebb biztonsági kockázatot jelent.
 
 ### 3. Felhő (IaC): Terraform
-- **[main.tf](main.tf)**: AWS erőforrások kezelése az `eu-central-1` régióban:
-    - **S3 Bucket**: Skálázható tárhely.
-    - **ECR Repository**: Biztonságos Docker image tároló `force_delete` és push-kori szkennelés funkciókkal.
-    - **IAM Szerepkörök**: App Runner jogosultságok az ECR eléréséhez.
-    - **App Runner Service**: Menedzselt konténerfuttatás automatikus deploymenttel.
+- **[main.tf](main.tf)**: Ebben a fájlban definiáltam az összes AWS erőforrást az `eu-central-1` régióban. Használtam S3 tárhelyet, ECR-t az image-ek tárolására, és App Runnert a konténer futtatásához. Fontosnak tartottam az IAM szerepkörök pontos beállítását is.
 
 ### 4. Automatizáció: CI/CD
-- **[.github/workflows/deploy.yml](.github/workflows/deploy.yml)**: GitHub Actions pipeline, amely minden `master` ágra történő push esetén buildeli és feltolja az image-et az Amazon ECR-be.
+- **[.github/workflows/deploy.yml](.github/workflows/deploy.yml)**: Egy automatizált pipeline-t építettem, amely minden feltoláskor (push) lefuttatja a teszteket, buildeli az új image-et, és biztonságosan frissíti az AWS környezetet.
 
 ### 5. Orchestration: Kubernetes
-- **[k8s.yaml](k8s.yaml)**: Deployment és Service konfigurációk helyi futtatáshoz (pl. k3d vagy minikube használatával).
+- **[k8s.yaml](k8s.yaml)**: Készítettem Kubernetes konfigurációkat is, hogy az alkalmazás könnyen tesztelhető legyen helyi fürtökben (pl. k3d vagy minikube).
 
-## Késznek Tekintési Feltételek
-- **Helyi futás**: A k3d fürtben a podok futnak és port-forward után elérhetőek.
-- **Felhő futás**: A `terraform apply` sikeresen lefut és publikus HTTPS címet ad.
-- **CI/CD Pipeline**: Zöld pipák a GitHub Actions fülön minden push után.
-- **Takarítás**: A `terraform destroy` és fürt törlés maradéktalanul eltávolít minden erőforrást.
+## Telepítési útmutató
+
+### Amire szükséged lesz
+- **Terraform**: Az infrastruktúra automatizálásához.
+- **Docker**: A build folyamathoz.
+- **AWS CLI**: Megfelelő jogosultságokkal (Access Key & Secret Key).
+
+### Helyi futtatás és tesztelés
+1. Terraform inicializálása:
+   ```bash
+   terraform init
+   ```
+2. Terv ellenőrzése:
+   ```bash
+   terraform plan
+   ```
+3. Infrastruktúra létrehozása (opcionális):
+   ```bash
+   terraform apply
+   ```
+
+### Automatikus Deployment
+A projekt úgy van beállítva, hogy minden `git push` után automatikusan frissüljön az AWS-ben. Ez biztosítja a folyamatos kiszállítást (Continuous Delivery):
+```bash
+git add .
+git commit -m "Új funkció hozzáadása"
+git push origin master
+```
+
+---
+
+<a name="english"></a>
+# Terraform & Go Cloud Project (English)
+
+This is a personal project where I showcase my ability to build and automate a modern cloud-native environment. I designed this to demonstrate a full DevOps lifecycle—starting from a Go-based backend and moving through Dockerization to fully automated AWS deployment using Terraform and GitHub Actions.
+
+## Project Architecture
+
+### 1. Backend: Go API
+- **[main.go](app/main.go)**: A lightweight API that handles basic requests and identifies the host machine. I designed it this way to make scaling (Kubernetes/Load Balancers) easy to observe.
+- **[main_test.go](app/main_test.go)**: Unit tests included to ensure that core logic is validated before any build or deployment occurs.
+
+### 2. Containerization: Docker
+- **[Dockerfile](Dockerfile)**: I used a multi-stage build pattern based on Alpine Linux. This keeps the final image footprint extremely small (~15MB), making it efficient to store and fast to deploy.
+
+### 3. Infrastructure as Code (IaC): Terraform
+- **[main.tf](main.tf)**: All AWS resources are provisioned via Terraform in the `eu-central-1` region. This includes an S3 bucket for storage, ECR for image management, and AWS App Runner for managed container hosting, all tied together with secure IAM roles.
+
+### 4. Automation: CI/CD
+- **[.github/workflows/deploy.yml](.github/workflows/deploy.yml)**: I built a robust pipeline that triggers on every push to `master`. It handles testing, building, and pushing the new image to ECR, ensuring that only verified code reaches the cloud.
+
+### 5. Orchestration: Kubernetes
+- **[k8s.yaml](k8s.yaml)**: These configurations allow for local testing and orchestration using clusters like k3d or minikube, mirroring how the app would behave in an enterprise environment.
+
+## Setup Guide
+
+### Prerequisites
+- **Terraform**: For infrastructure automation.
+- **Docker**: For local builds.
+- **AWS CLI**: Configured with valid programmatic access (Access Key & Secret Key).
+
+### Local Setup & Testing
+1. Initialize Terraform:
+   ```bash
+   terraform init
+   ```
+2. Verify the changes:
+   ```bash
+   terraform plan
+   ```
+3. (Optional) Spin up the cloud environment:
+   ```bash
+   terraform apply
+   ```
+
+### Deployment
+Designed for a smooth developer experience—simply push your changes, and the CI/CD pipeline takes care of the rest:
+```bash
+git add .
+git commit -m "Add feature high-level summary"
+git push origin master
+```
