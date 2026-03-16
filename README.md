@@ -7,7 +7,7 @@
 <a name="magyar"></a>
 # Terraform & Go Cloud Projekt (Magyar)
 
-Ez a projekt bemutatja a modern felhő-natív fejlesztési folyamatokat (DevOps) mutatja be. A célom az volt, hogy egy teljes életciklust építsek fel: a Go backend kódtól kezdve a konténerizáción át egészen az automatizált AWS felhős telepítésig.
+Ez a projekt bemutatja a modern felhő-natív fejlesztési folyamatokat (DevOps). A célom az volt, hogy egy teljes életciklust építsek fel: a Go backend kódtól kezdve a konténerizáción át egészen az automatizált AWS felhős telepítésig.
 
 ## A projekt felépítése
 
