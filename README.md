@@ -1,3 +1,14 @@
+<p align="center">
+<pre>
+  ██████╗ ██╗   ██╗ ██████╗ ██████╗  ██████╗ ██╗   ██╗    ████████╗ ██████╗ ████████╗██╗  ██╗
+ ██╔════╝ ╚██╗ ██╔╝██╔═══██╗██╔══██╗██╔════╝ ╚██╗ ██╔╝    ╚══██╔══╝██╔═══██╗╚══██╔══╝██║  ██║
+ ██║  ███╗ ╚████╔╝ ██║   ██║██████╔╝██║  ███╗ ╚████╔╝        ██║   ██║   ██║   ██║   ███████║
+ ██║   ██║  ╚██╔╝  ██║   ██║██╔══██╗██║   ██║  ╚██╔╝         ██║   ██║   ██║   ██║   ██║  ██║
+ ╚██████╔╝   ██║   ╚██████╔╝██║  ██║╚██████╔╝   ██║          ██║   ╚██████╔╝   ██║   ██║  ██║
+  ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝    ╚═╝          ╚═╝    ╚═════╝    ╚═╝   ╚═╝  ╚═╝
+</pre>
+</p>
+
 # Cloud-Native Go & Infrastructure Pipeline (AWS + Terraform)
 
 This project demonstrates a production-ready, end-to-end DevOps lifecycle. I built this to showcase how a containerized Go application moves from a local environment to a fully automated AWS infrastructure using modern CI/CD practices.
